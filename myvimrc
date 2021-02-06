@@ -1,0 +1,162 @@
+"If dein.vim not installed then
+"curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh && sh installer.sh .cache/dein >> myvimrc && rm -rf installer.sh
+":call dein#install()
+
+
+	" Add or remove your plugins here like this:
+" 	call dein#add('Shougo/denite.nvim')
+" 	call dein#add('scrooloose/nerdtree')
+" 	call dein#add('tpope/vim-endwise')
+" 	call dein#add('tomtom/tcomment_vim')
+" 	call dein#add('nathanaelkane/vim-indent-guides')
+"   call dein#add('vim-jp/vimdoc-ja')
+" 	" let g:indent_guides_enable_on_vim_startup = 1
+" 	call dein#add('tomasr/molokai')
+" 	call dein#add('jacoborus/tender.vim')
+	" call dein#add('vim-jp/vimdoc-ja')
+" 	call dein#add('itchyny/lightline.vim')
+" 	call dein#add('jonathanfilip/vim-lucius')
+
+"
+" 	call dein#add('Shougo/deoplete.nvim')
+" 	if !has('nvim')
+" 		call dein#add('roxma/nvim-yarp')
+" 		call dein#add('roxma/vim-hug-neovim-rpc')
+" 	endif
+"
+" 	call dein#add('Shougo/neosnippet.vim')
+" 	call dein#add('Shougo/neosnippet-snippets')
+"
+" " let g:python3_host_prog = expand('/usr/local/bin/python3')
+" let g:deoplete#enable_at_startup = 1
+" let g:deoplete#auto_completion_start_length = 1
+" " let g:ruby_host_prog = '/usr/local/lib/ruby/gems/2.6.0/gems/neovim-0.8.1/exe/neovim-ruby-host'
+
+" http://inari.hatenablog.com/entry/2014/05/05/231307
+""""""""""""""""""""""""""""""
+" 全角スペースの表示
+""""""""""""""""""""""""""""""
+function! ZenkakuSpace()
+	highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
+endfunction
+
+if has('syntax')
+	augroup ZenkakuSpace
+		autocmd!
+		autocmd ColorScheme * call ZenkakuSpace()
+		autocmd VimEnter,WinEnter,BufRead * let w:m1=matchadd('ZenkakuSpace', '　')
+	augroup END
+	call ZenkakuSpace()
+endif
+""""""""""""""""""""""""""""""
+
+" https://sites.google.com/site/fudist/Home/vim-nihongo-ban/-vimrc-sample
+""""""""""""""""""""""""""""""
+" 挿入モード時、ステータスラインの色を変更
+""""""""""""""""""""""""""""""
+let g:hi_insert = 'highlight StatusLine guifg=darkblue guibg=darkyellow gui=none ctermfg=blue ctermbg=yellow cterm=none'
+
+if has('syntax')
+	augroup InsertHook
+		autocmd!
+		autocmd InsertEnter * call s:StatusLine('Enter')
+		autocmd InsertLeave * call s:StatusLine('Leave')
+	augroup END
+endif
+
+let s:slhlcmd = ''
+function! s:StatusLine(mode)
+	if a:mode == 'Enter'
+		silent! let s:slhlcmd = 'highlight ' . s:GetHighlight('StatusLine')
+		silent exec g:hi_insert
+	else
+		highlight clear StatusLine
+		silent exec s:slhlcmd
+	endif
+endfunction
+
+function! s:GetHighlight(hi)
+	redir => hl
+	exec 'highlight '.a:hi
+	redir END
+	let hl = substitute(hl, '[\r\n]', '', 'g')
+	let hl = substitute(hl, 'xxx', '', '')
+	return hl
+endfunction
+""""""""""""""""""""""""""""""
+
+" http://pyoonn.hatenablog.com/entry/2014/10/04/225321
+" colorscheme molokai
+" let g:molokai_original = 1
+let g:rehash256 = 1
+" set background=dark
+" colorscheme elflord
+" colorscheme tender
+" colorscheme lucius
+" let g:lightline = {
+"       \ 'colorscheme': 'tender'
+"       \}
+
+" " Plugin key-mappings.
+" " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+" imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+" smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+" xmap <C-k>     <Plug>(neosnippet_expand_target)
+"
+" set encoding=utf-8
+"
+" " SuperTab like snippets behavior.
+" " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+" imap <expr><TAB>
+" 			\ pumvisible() ? "\<C-n>" :
+" 			\ neosnippet#expandable_or_jumpable() ?
+" 			\    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+" smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+" 			\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+" For conceal markers.
+if has('conceal')
+	set conceallevel=2 concealcursor=niv
+endif
+
+" " Define Denite mappings
+" autocmd FileType denite call s:denite_my_settings()
+" function! s:denite_my_settings() abort
+"   nnoremap <silent><buffer><expr> <CR>
+"         \ denite#do_map('do_action')
+"   nnoremap <silent><buffer><expr> d
+"         \ denite#do_map('do_action', 'delete')
+"   nnoremap <silent><buffer><expr> p
+"         \ denite#do_map('do_action', 'preview')
+"   nnoremap <silent><buffer><expr> q
+"         \ denite#do_map('quit')
+"   nnoremap <silent><buffer><expr> i
+"         \ denite#do_map('open_filter_buffer')
+"   nnoremap <silent><buffer><expr> <Space>
+"         \ denite#do_map('toggle_select').'j'
+" endfunction
+
+syntax on
+set tabstop=2
+set expandtab
+set autoindent
+set shiftwidth=2
+set smartindent
+set clipboard+=unnamed
+set number
+set laststatus=2
+set cmdheight=1
+set wildmenu
+set wildmode=longest:full,full
+inoremap { {}<LEFT>
+inoremap {<ENTER> {}<Left><ENTER><ESC><S-<><S-<><S-o>
+inoremap [ []<LEFT>
+inoremap ( ()<LEFT>
+inoremap " ""<LEFT>
+inoremap ' ''<LEFT>
+" nnoremap <silent><C-k> :NERDTreeToggle<CR>
+set backspace=indent,eol,start
+set whichwrap=b,s,h,l,<,>,[,]
+set hls
+set is
+" set list
